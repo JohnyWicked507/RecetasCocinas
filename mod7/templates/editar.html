@@ -1,0 +1,20 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title>Editar Receta</title>
+  </head>
+  <body>
+    <h1>Editar receta - {{ nombre }}</h1>
+    <form method="post">
+      <label for="ingredientes">Ingredientes:</label><br />
+      <textarea id="ingredientes" name="ingredientes">
+{{ receta.ingredientes }}</textarea
+      ><br />
+      <label for="pasos">Pasos:</label><br />
+      <textarea id="pasos" name="pasos">{{ receta.pasos }}</textarea><br />
+      <button type="submit">Guardar cambios</button>
+    </form>
+    <a href="{{ url_for('home') }}">Volver al inicio</a>
+  </body>
+</html>
