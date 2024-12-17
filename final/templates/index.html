@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Gestión de Donaciones de Sangre</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='style.css') }}"
+    />
+  </head>
+  <body>
+    <h1>Gestión de Donaciones de Sangre</h1>
+
+    <div>
+      <h2>Agregar Donante</h2>
+      <form id="addDonorForm">
+        <label for="name">Nombre:</label>
+        <input type="text" id="name" required />
+        <label for="blood_type">Tipo de Sangre:</label>
+        <input type="text" id="blood_type" required />
+        <button type="submit">Agregar Donante</button>
+      </form>
+    </div>
+
+    <hr />
+
+    <div>
+      <h2>Lista de Donantes</h2>
+      <ul id="donorList"></ul>
+    </div>
+
+    <script>
+      // Función para obtener los donantes y mostrarlos en la lista
+      function loadDonors() {
+        fetch("/donors")
+          .then((response) => response.json())
+          .then((data) => {
+            const donorList = document.getElementById("donorList");
+            donorList.innerHTML = ""; // Limpiar la lista
+            data.forEach((donor) => {
+              const li = document.createElement("li");
+              li.textContent = `${donor.name} (${donor.blood_type})`;
+
+              const deleteButton = document.createElement("button");
+              deleteButton.textContent = "Eliminar";
+              deleteButton.onclick = () => deleteDonor(donor.id);
+
+              li.appendChild(deleteButton);
+              donorList.appendChild(li);
+            });
+          });
+      }
+
+      // Función para agregar un donante
+      document
+        .getElementById("addDonorForm")
+        .addEventListener("submit", function (e) {
+          e.preventDefault();
+          const name = document.getElementById("name").value;
+          const blood_type = document.getElementById("blood_type").value;
+
+          fetch("/donors", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ name, blood_type }),
+          })
+            .then((response) => response.json())
+            .then((data) => {
+              alert("Donante agregado");
+              loadDonors(); // Recargar la lista de donantes
+            })
+            .catch((error) => alert("Error al agregar donante: " + error));
+        });
+
+      // Función para eliminar un donante
+      function deleteDonor(id) {
+        fetch(`/donors/${id}`, { method: "DELETE" })
+          .then((response) => response.json())
+          .then((data) => {
+            alert("Donante eliminado");
+            loadDonors(); // Recargar la lista de donantes
+          })
+          .catch((error) => alert("Error al eliminar donante: " + error));
+      }
+
+      // Cargar la lista de donantes al cargar la página
+      window.onload = loadDonors;
+    </script>
+  </body>
+</html>

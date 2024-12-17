@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Data</title>
+</head>
+<body>
+    <h1>Manage Data</h1>
+    
+    <h3>Fetch Data</h3>
+    <button onclick="fetchData()">Fetch Data</button>
+    <pre id="dataDisplay"></pre>
+
+    <h3>Add New Data</h3>
+    <form id="addDataForm">
+        <input type="text" id="newData" placeholder="Enter new data">
+        <button type="submit">Add Data</button>
+    </form>
+
+    <h3>Update Data</h3>
+    <form id="updateDataForm">
+        <input type="number" id="updateId" placeholder="Enter item ID">
+        <input type="text" id="updateValue" placeholder="Enter updated data">
+        <button type="submit">Update Data</button>
+    </form>
+
+    <h3>Delete Data</h3>
+    <form id="deleteDataForm">
+        <input type="number" id="deleteId" placeholder="Enter item ID">
+        <button type="submit">Delete Data</button>
+    </form>
+
+    <script>
+        async function fetchData() {
+            const response = await fetch('/fetch_data');
+            const data = await response.json();
+            document.getElementById('dataDisplay').textContent = JSON.stringify(data, null, 2);
+        }
+
+        document.getElementById('addDataForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const newData = document.getElementById('newData').value;
+            const response = await fetch('/add_data', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ name: newData })
+            });
+            const result = await response.json();
+            alert(result.
